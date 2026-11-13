@@ -218,3 +218,26 @@ themeButton.addEventListener('click', () => {
 // Step 6: initial render
 applyTheme(theme, themeButton);
 render();
+
+/**
+ * Optional features list (from the starter project) - what I implemented:
+ *
+ * [x] Option 1: Toggle the completed status of a todo item
+ * [x] Option 2: Clear all completed todos + toggle all todos
+ * [x] Option 3: Edit a todo item (input field, Save, Cancel)
+ * [x] Option 4: Filter todos by status
+ * [x] Option 5: Sort todos by status
+ * [x] Option 6: Due date for todos + highlight overdue todos
+ * [x] Option 7: Priority levels + sort by priority
+ * [x] Option 8: Search functionality
+ * [ ] Option 9: Category tags
+ * [x] Option 10: Progress indicator
+ * [x] Option 11: Dark mode toggle
+ * [ ] Option 12: Export/Import todos
+ * [ ] Option 13: Notifications
+ * [x] Option 14: Local storage
+ * [x] Option 15: JSDoc comments
+ * [x] Option 16: Handle errors (input validation)
+ *
+ * Unit tests: src/main.test.ts (run with `npm test`)
+ */

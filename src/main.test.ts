@@ -85,6 +85,42 @@ describe('TodoStore', () => {
     expect(reloaded.getAll()[0].text).toBe('Persist me');
   });
 
+  it('gives a new todo the default category "personal" (Option 9)', () => {
+    expect(store.add({ text: 'No category' }).category).toBe('personal');
+    expect(store.add({ text: 'Homework', category: 'school' }).category).toBe('school');
+  });
+
+  it('filters by category together with status and search (Option 9)', () => {
+    const report = store.add({ text: 'Write report', category: 'work' });
+    store.add({ text: 'Call boss', category: 'work' });
+    store.add({ text: 'Buy milk', category: 'shopping' });
+    store.toggle(report.id);
+
+    const view = { filter: 'all', search: '', sort: 'created' } as const;
+    expect(store.getVisible({ ...view, category: 'work' })).toHaveLength(2);
+    expect(store.getVisible({ ...view, category: 'work', filter: 'active' }).map((t) => t.text)).toEqual(['Call boss']);
+    expect(store.getVisible({ ...view, category: 'shopping', search: 'report' })).toHaveLength(0);
+    expect(store.getVisible({ ...view, category: 'all' })).toHaveLength(3);
+  });
+
+  it('counts todos per category (Option 9)', () => {
+    store.add({ text: 'A', category: 'work' });
+    store.add({ text: 'B', category: 'work' });
+    store.add({ text: 'C', category: 'school' });
+    expect(store.countByCategory()).toEqual({ work: 2, school: 1, personal: 0, shopping: 0 });
+  });
+
+  it('changes the category when a todo is edited (Option 9)', () => {
+    const todo = store.add({ text: 'Groceries', category: 'personal' });
+    store.update(todo.id, { category: 'shopping' });
+    expect(store.getAll()[0].category).toBe('shopping');
+  });
+
+  it('loads old todos without a category as "personal" (Option 9)', () => {
+    storage.setItem('ts-todo-app.todos', JSON.stringify([{ id: 1, text: 'Old todo', completed: false, priority: 'low', createdAt: 1 }]));
+    expect(new TodoStore(storage).getAll()[0].category).toBe('personal');
+  });
+
   it('survives broken JSON in storage', () => {
     storage.setItem('ts-todo-app.todos', '{not json');
     expect(new TodoStore(storage).getAll()).toEqual([]);

@@ -1,0 +1,152 @@
+# CI/CD pipeline
+#
+#  push / PR (any branch) ──► 1. CI: build + unit tests + e2e tests
+#  push to develop        ──► 2. Delivery:   deploy to TEST env  ──► e2e tests against TEST
+#  push to main           ──► 3. Deployment: deploy to PRODUCTION ──► smoke test against PRODUCTION
+#
+# Nothing is deployed if a test fails, because every deploy job `needs` the CI job.
+
+name: CI/CD pipeline
+
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'release/**', 'hotfix/**']
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: write # needed to push the build to the gh-pages branch
+
+env:
+  NODE_VERSION: 22
+  TEST_URL: https://martindracka.github.io/typescript-todo-app/test/
+  PRODUCTION_URL: https://martindracka.github.io/typescript-todo-app/
+
+jobs:
+  # ---------------------------------------------------------------- 1. CONTINUOUS INTEGRATION
+  ci:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check and build
+        run: npm run build
+
+      - name: Unit tests (Vitest)
+        run: npm test
+
+      - name: End-to-end tests (TestCafé, headless Chrome)
+        run: npm run test:e2e
+
+      - name: Add version file to the build
+        run: echo "${{ github.sha }}" > dist/version.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  # ---------------------------------------------------------------- 2. CONTINUOUS DELIVERY (test env)
+  deploy-test:
+    name: Deploy to test
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    concurrency: gh-pages
+    environment:
+      name: test
+      url: ${{ env.TEST_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to GitHub Pages /test
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          destination_dir: test
+          keep_files: true # do not delete the production files in the root
+
+      - name: Wait until the new version is live
+        run: |
+          for i in $(seq 1 40); do
+            if curl -fs "${TEST_URL}version.txt?nocache=$RANDOM" | grep -q "${{ github.sha }}"; then echo "Live!"; exit 0; fi
+            echo "Waiting for GitHub Pages... ($i)"; sleep 15
+          done
+          exit 1
+
+      - name: End-to-end tests against the test environment
+        run: npm run test:e2e:remote
+        env:
+          BASE_URL: ${{ env.TEST_URL }}
+
+  # ---------------------------------------------------------------- 3. CONTINUOUS DEPLOYMENT (production)
+  deploy-production:
+    name: Deploy to production
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency: gh-pages
+    environment:
+      name: production
+      url: ${{ env.PRODUCTION_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to GitHub Pages (root)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          keep_files: true # keep the /test folder
+
+      - name: Wait until the new version is live
+        run: |
+          for i in $(seq 1 40); do
+            if curl -fs "${PRODUCTION_URL}version.txt?nocache=$RANDOM" | grep -q "${{ github.sha }}"; then echo "Live!"; exit 0; fi
+            echo "Waiting for GitHub Pages... ($i)"; sleep 15
+          done
+          exit 1
+
+      - name: Smoke test production
+        run: npx testcafe "chrome:headless" tests/e2e/smoke.e2e.ts
+        env:
+          BASE_URL: ${{ env.PRODUCTION_URL }}

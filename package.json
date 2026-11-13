@@ -10,8 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "compile:manual": "tsc manual-compile/basics.ts --outDir manual-compile/dist --target ES2020 && node manual-compile/dist/basics.js",
-    "test:e2e": "testcafe \"chrome:headless\" tests/e2e/ --app \"npx vite preview --port 4174 --strictPort\" --app-init-delay 4000",
-    "test:e2e:remote": "testcafe \"chrome:headless\" tests/e2e/"
+    "test:e2e": "testcafe \"chrome:headless --no-sandbox --disable-dev-shm-usage\" tests/e2e/ --app \"npx vite preview --port 4174 --strictPort\" --app-init-delay 4000",
+    "test:e2e:remote": "testcafe \"chrome:headless --no-sandbox --disable-dev-shm-usage\" tests/e2e/"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",

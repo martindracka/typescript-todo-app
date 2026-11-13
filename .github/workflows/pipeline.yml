@@ -147,6 +147,6 @@ jobs:
           exit 1
 
       - name: Smoke test production
-        run: npx testcafe "chrome:headless" tests/e2e/smoke.e2e.ts
+        run: npx testcafe "chrome:headless --no-sandbox --disable-dev-shm-usage" tests/e2e/smoke.e2e.ts
         env:
           BASE_URL: ${{ env.PRODUCTION_URL }}

@@ -26,7 +26,7 @@ jobs:
   # ---------------------------------------------------------------- 1. CONTINUOUS INTEGRATION
   ci:
     name: Build and test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned: headless Chrome sometimes hangs on the new 26.04 image
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -47,7 +47,8 @@ jobs:
         run: npm test
 
       - name: End-to-end tests (TestCafé, headless Chrome)
-        run: npm run test:e2e
+        # one retry if the browser fails to START (a failing test fails both attempts)
+        run: npm run test:e2e -- --browser-init-timeout 60000 || npm run test:e2e
 
       - name: Add version file to the build
         run: echo "${{ github.sha }}" > dist/version.txt
@@ -63,7 +64,7 @@ jobs:
     name: Deploy to test
     needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned: headless Chrome sometimes hangs on the new 26.04 image
     concurrency: gh-pages
     environment:
       name: test
@@ -110,7 +111,7 @@ jobs:
     name: Deploy to production
     needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned: headless Chrome sometimes hangs on the new 26.04 image
     concurrency: gh-pages
     environment:
       name: production

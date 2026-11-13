@@ -92,7 +92,7 @@ describe('TodoStore', () => {
 });
 
 describe('helpers', () => {
-  const base: Todo = { id: 1, text: 'x', completed: false, priority: 'low', createdAt: 1 };
+  const base: Todo = { id: 1, text: 'x', completed: false, priority: 'low', category: 'personal', createdAt: 1 };
 
   it('detects overdue todos (Option 6)', () => {
     expect(isOverdue({ ...base, dueDate: '2020-01-01' }, '2026-11-13')).toBe(true);

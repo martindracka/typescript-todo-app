@@ -219,6 +219,12 @@ select:focus-visible,
   flex-wrap: wrap;
 }
 
+.toolbar-selects {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .filters {
   display: flex;
   gap: 4px;

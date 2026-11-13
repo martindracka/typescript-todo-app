@@ -1,4 +1,5 @@
 import type {
+  Category,
   NewTodoInput,
   Priority,
   Progress,
@@ -7,7 +8,7 @@ import type {
   TodoChanges,
   ViewOptions,
 } from './types';
-import { isPriority } from './types';
+import { isCategory, isPriority } from './types';
 
 /** Numeric weight of every priority - used for sorting (Option 7). */
 const PRIORITY_WEIGHT: Record<Priority, number> = { high: 3, medium: 2, low: 1 };
@@ -51,6 +52,7 @@ export class TodoStore {
       completed: false,
       priority: input.priority ?? 'medium', // default value if priority was not given
       dueDate: input.dueDate || undefined, // empty string from the date input => no due date
+      category: input.category ?? 'personal', // Option 9: default category
       createdAt: Date.now(),
     };
     this.todos.push(newTodo);
@@ -112,11 +114,22 @@ export class TodoStore {
   }
 
   /**
+   * Option 9: how many todos there are in every category.
+   * `Record<Category, number>` makes TypeScript check that no category is forgotten.
+   */
+  public countByCategory(): Record<Category, number> {
+    const counts: Record<Category, number> = { work: 0, school: 0, personal: 0, shopping: 0 };
+    this.todos.forEach((todo) => counts[todo.category]++);
+    return counts;
+  }
+
+  /**
    * Returns the todos that should be displayed - filtered, searched and sorted.
-   * Options 4, 5, 7 and 8.
+   * Options 4, 5, 7, 8 and 9.
    */
   public getVisible(options: ViewOptions): Todo[] {
     const query = options.search.trim().toLowerCase();
+    const category = options.category ?? 'all';
 
     const visible = this.todos
       .filter((todo) => {
@@ -124,6 +137,7 @@ export class TodoStore {
         if (options.filter === 'completed') return todo.completed;
         return true; // 'all'
       })
+      .filter((todo) => category === 'all' || todo.category === category) // Option 9
       .filter((todo) => todo.text.toLowerCase().includes(query));
 
     return this.sort(visible, options.sort);
@@ -181,6 +195,7 @@ export class TodoStore {
           ...item,
           completed: Boolean(item.completed),
           priority: isPriority(item.priority) ? item.priority : 'medium',
+          category: isCategory(item.category) ? item.category : 'personal', // old todos had no category
           createdAt: typeof item.createdAt === 'number' ? item.createdAt : item.id,
         }));
     } catch (error) {

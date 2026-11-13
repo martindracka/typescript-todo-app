@@ -1,5 +1,5 @@
-import type { Priority, Progress, Todo, TodoChanges } from '../types';
-import { isPriority } from '../types';
+import type { Category, Priority, Progress, Todo, TodoChanges } from '../types';
+import { CATEGORIES, isCategory, isPriority } from '../types';
 import { formatDate, isOverdue } from '../utils/date';
 import { validateTodoText } from '../utils/validation';
 
@@ -16,6 +16,14 @@ export interface TodoHandlers {
 }
 
 const PRIORITY_LABEL: Record<Priority, string> = { low: 'Low', medium: 'Medium', high: 'High' };
+
+/** Option 9: text shown on the category tag. */
+export const CATEGORY_LABEL: Record<Category, string> = {
+  work: 'Work',
+  school: 'School',
+  personal: 'Personal',
+  shopping: 'Shopping',
+};
 
 /**
  * Small helper that creates an element with an optional class and text.
@@ -44,6 +52,19 @@ export const createPrioritySelect = (selected: Priority): HTMLSelectElement => {
   return select;
 };
 
+/** Option 9: builds the <select> with all categories (used in edit mode). */
+export const createCategorySelect = (selected: Category): HTMLSelectElement => {
+  const select = createElement('select', 'edit-category');
+  select.setAttribute('aria-label', 'Edit category');
+  CATEGORIES.forEach((category) => {
+    const option = createElement('option', undefined, CATEGORY_LABEL[category]);
+    option.value = category;
+    option.selected = category === selected;
+    select.appendChild(option);
+  });
+  return select;
+};
+
 /** One todo in normal (view) mode. */
 const renderViewItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
   const overdue = isOverdue(todo);
@@ -63,6 +84,7 @@ const renderViewItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
 
   // Option 6 + 7: show priority and due date next to the todo
   const meta = createElement('div', 'todo-meta');
+  meta.appendChild(createElement('span', `tag tag-${todo.category}`, CATEGORY_LABEL[todo.category])); // Option 9
   meta.appendChild(createElement('span', `badge badge-${todo.priority}`, PRIORITY_LABEL[todo.priority]));
   if (todo.dueDate) {
     const due = createElement('span', 'todo-due', `Due: ${formatDate(todo.dueDate)}`);
@@ -94,6 +116,7 @@ const renderEditItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
   textInput.setAttribute('aria-label', 'Edit todo text');
 
   const prioritySelect = createPrioritySelect(todo.priority);
+  const categorySelect = createCategorySelect(todo.category);
   const dateInput = createElement('input', 'edit-date');
   dateInput.type = 'date';
   dateInput.value = todo.dueDate ?? '';
@@ -110,7 +133,8 @@ const renderEditItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
       return;
     }
     const priority = isPriority(prioritySelect.value) ? prioritySelect.value : todo.priority;
-    handlers.onSave(todo.id, { text: result.value, priority, dueDate: dateInput.value });
+    const category = isCategory(categorySelect.value) ? categorySelect.value : todo.category;
+    handlers.onSave(todo.id, { text: result.value, priority, category, dueDate: dateInput.value });
   };
 
   // Keyboard: Enter = save, Escape = cancel
@@ -127,7 +151,7 @@ const renderEditItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
   cancelButton.addEventListener('click', handlers.onCancelEdit);
 
   const fields = createElement('div', 'edit-fields');
-  fields.append(textInput, prioritySelect, dateInput);
+  fields.append(textInput, prioritySelect, categorySelect, dateInput);
   const actions = createElement('div', 'todo-actions');
   actions.append(saveButton, cancelButton);
 

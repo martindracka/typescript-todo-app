@@ -13,6 +13,7 @@ Based on the starter code from [kristian-wittrup/2024-todo-TS-app-bde](https://g
 - Due date, overdue todos are shown in red
 - Priority: Low / Medium / High
 - Search
+- Category tags (Work / School / Personal / Shopping) + filter by category
 - Progress bar
 - Dark mode
 - Todos are saved in localStorage
@@ -37,3 +38,15 @@ npm run dev
 ```
 
 Other commands: `npm test`, `npm run build`, `npm run compile:manual`
+
+## Tests
+
+- `npm test` - unit tests (Vitest)
+- `npm run build && npm run test:e2e` - end-to-end tests (TestCafé, headless Chrome) in `tests/e2e/`
+
+## Workflow
+
+- **Gitflow:** `main` (production), `develop` (test), `feature/*`, `release/*`
+- **Conventional commits**, e.g. `feat(categories): filter todos by category`
+- Every feature has a GitHub issue and is merged into `develop` with a reviewed pull request
+- **CI/CD** (`.github/workflows/pipeline.yml`): build + tests on every push, `develop` is deployed to the [test environment](https://martindracka.github.io/typescript-todo-app/test/), `main` to [production](https://martindracka.github.io/typescript-todo-app/)

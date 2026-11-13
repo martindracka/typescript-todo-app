@@ -14,9 +14,9 @@
  */
 import './style.css';
 import { TodoStore } from './TodoStore';
-import { isCategory, isFilterStatus, isPriority, isSortOption } from './types';
+import { CATEGORIES, isCategory, isCategoryFilter, isFilterStatus, isPriority, isSortOption } from './types';
 import type { StorageLike, Theme, TodoChanges, ViewOptions } from './types';
-import { renderProgress, renderTodos } from './ui/render';
+import { CATEGORY_LABEL, renderProgress, renderTodos } from './ui/render';
 import type { TodoHandlers } from './ui/render';
 import { applyTheme, getInitialTheme, toggleTheme } from './ui/theme';
 import { validateTodoText } from './utils/validation';
@@ -43,6 +43,7 @@ const todoList = getElement<HTMLUListElement>('#todo-list');
 const emptyState = getElement<HTMLParagraphElement>('#empty-state');
 const searchInput = getElement<HTMLInputElement>('#search-input');
 const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+const categoryFilter = getElement<HTMLSelectElement>('#category-filter');
 const sortSelect = getElement<HTMLSelectElement>('#sort-select');
 const progressFill = getElement<HTMLDivElement>('#progress-fill');
 const progressText = getElement<HTMLSpanElement>('#progress-text');
@@ -65,7 +66,7 @@ const getStorage = (): StorageLike | null => {
 const storage = getStorage();
 const store = new TodoStore(storage); // Option 14: todos are loaded from localStorage here
 
-const view: ViewOptions = { filter: 'all', search: '', sort: 'created' };
+const view: ViewOptions = { filter: 'all', search: '', sort: 'created', category: 'all' };
 let editingId: number | null = null; // UNION with null: either an id or "nothing is being edited"
 let theme: Theme = getInitialTheme(storage);
 
@@ -85,6 +86,13 @@ const render = (): void => {
   toggleAllButton.disabled = !hasTodos;
   clearCompletedButton.disabled = progress.completed === 0;
   clearAllButton.disabled = !hasTodos;
+
+  // Option 9: show how many todos are in every category, e.g. "Work (2)"
+  const counts = store.countByCategory();
+  CATEGORIES.forEach((category) => {
+    const option = categoryFilter.querySelector<HTMLOptionElement>(`option[value="${category}"]`);
+    if (option) option.textContent = `${CATEGORY_LABEL[category]} (${counts[category]})`;
+  });
 
   filterButtons.forEach((button) => {
     const isActive = button.dataset.filter === view.filter;
@@ -181,6 +189,14 @@ filterButtons.forEach((button) => {
       render();
     }
   });
+});
+
+// Option 9: filter by category
+categoryFilter.addEventListener('change', () => {
+  if (isCategoryFilter(categoryFilter.value)) {
+    view.category = categoryFilter.value;
+    render();
+  }
 });
 
 // Option 5 + 7: sort

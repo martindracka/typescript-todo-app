@@ -44,7 +44,7 @@
         <span id="progress-text" class="progress-text">No todos yet</span>
       </section>
 
-      <!-- Option 8 search, Option 4 filter, Option 5/7 sort -->
+      <!-- Option 8 search, Option 4 filter, Option 9 category filter, Option 5/7 sort -->
       <section class="toolbar">
         <input type="search" id="search-input" placeholder="Search todos..." aria-label="Search todos" />
         <div class="toolbar-row">
@@ -53,6 +53,13 @@
             <button type="button" class="btn btn-filter" data-filter="active">Active</button>
             <button type="button" class="btn btn-filter" data-filter="completed">Completed</button>
           </div>
+          <select id="category-filter" aria-label="Filter by category">
+            <option value="all">All categories</option>
+            <option value="work">Work</option>
+            <option value="school">School</option>
+            <option value="personal">Personal</option>
+            <option value="shopping">Shopping</option>
+          </select>
           <select id="sort-select" aria-label="Sort todos">
             <option value="created">Sort: Created</option>
             <option value="priority">Sort: Priority</option>

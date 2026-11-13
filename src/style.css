@@ -1,4 +1,4 @@
-/* ---------- Theme variables (Option 11: light / dark mode) ---------- */
+/* Theme variables (Option 11: light / dark mode) */
 :root {
   --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --radius: 8px;
@@ -82,7 +82,7 @@ h1 {
   font-size: 1.8rem;
 }
 
-/* ---------- Inputs & buttons ---------- */
+/* Inputs & buttons */
 input[type='text'],
 input[type='search'],
 input[type='date'],
@@ -136,7 +136,7 @@ select:focus-visible,
   color: #fff;
 }
 
-/* ---------- Form ---------- */
+/* Form */
 .todo-form {
   display: flex;
   flex-direction: column;
@@ -169,7 +169,7 @@ select:focus-visible,
   display: none;
 }
 
-/* ---------- Progress bar (Option 10) ---------- */
+/* Progress bar (Option 10) */
 .progress {
   margin: 18px 0 12px;
 }
@@ -196,7 +196,7 @@ select:focus-visible,
   color: var(--muted);
 }
 
-/* ---------- Toolbar ---------- */
+/* Toolbar */
 .toolbar {
   display: flex;
   flex-direction: column;
@@ -220,7 +220,7 @@ select:focus-visible,
   color: var(--accent-text);
 }
 
-/* ---------- Todo list ---------- */
+/* Todo list */
 .todo-list {
   list-style: none;
   padding: 0;

@@ -4,7 +4,7 @@ import { formatDate, isOverdue } from '../utils/date';
 import { validateTodoText } from '../utils/validation';
 
 /**
- * Callback functions the list needs. Rendering does not change data itself –
+ * Callback functions the list needs. Rendering does not change data itself -
  * it only tells main.ts what the user did (FUNCTION SIGNATURES in an interface).
  */
 export interface TodoHandlers {
@@ -65,7 +65,7 @@ const renderViewItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
   const meta = createElement('div', 'todo-meta');
   meta.appendChild(createElement('span', `badge badge-${todo.priority}`, PRIORITY_LABEL[todo.priority]));
   if (todo.dueDate) {
-    const due = createElement('span', 'todo-due', `📅 ${formatDate(todo.dueDate)}`);
+    const due = createElement('span', 'todo-due', `Due: ${formatDate(todo.dueDate)}`);
     meta.appendChild(due);
     if (overdue) meta.appendChild(createElement('span', 'badge badge-overdue', 'Overdue'));
   }
@@ -84,7 +84,7 @@ const renderViewItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
   return li;
 };
 
-/** Option 3: one todo in edit mode – input field, Save and Cancel buttons. */
+/** Option 3: one todo in edit mode - input field, Save and Cancel buttons. */
 const renderEditItem = (todo: Todo, handlers: TodoHandlers): HTMLLIElement => {
   const li = createElement('li', 'todo-item editing');
 

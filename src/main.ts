@@ -1,13 +1,13 @@
 /**
- * main.ts – entry point of the app.
+ * main.ts - entry point of the app.
  *
  * The code is split into MODULES:
- *  - types.ts            → interfaces, type aliases and union types
- *  - TodoStore.ts        → class that holds the data and saves it to localStorage
- *  - ui/render.ts        → functions that draw the todos in the DOM
- *  - ui/theme.ts         → dark / light mode
- *  - utils/date.ts       → due date helpers (overdue check, formatting)
- *  - utils/validation.ts → input validation
+ *  - types.ts            - interfaces, type aliases and union types
+ *  - TodoStore.ts        - class that holds the data and saves it to localStorage
+ *  - ui/render.ts        - functions that draw the todos in the DOM
+ *  - ui/theme.ts         - dark / light mode
+ *  - utils/date.ts       - due date helpers (overdue check, formatting)
+ *  - utils/validation.ts - input validation
  *
  * main.ts only connects everything: it reads the HTML elements,
  * listens to events, updates the store and re-renders.
@@ -21,7 +21,7 @@ import type { TodoHandlers } from './ui/render';
 import { applyTheme, getInitialTheme, toggleTheme } from './ui/theme';
 import { validateTodoText } from './utils/validation';
 
-// ---------- Step 1: get references to HTML elements ----------
+// Step 1: get references to HTML elements
 
 /**
  * Finds an element and throws a clear error if it is missing.
@@ -50,9 +50,9 @@ const clearCompletedButton = getElement<HTMLButtonElement>('#clear-completed-btn
 const clearAllButton = getElement<HTMLButtonElement>('#clear-all-btn');
 const themeButton = getElement<HTMLButtonElement>('#theme-toggle');
 
-// ---------- Step 2: application state ----------
+// Step 2: application state
 
-/** localStorage can be blocked (e.g. private mode) – then we just don't save. */
+/** localStorage can be blocked (e.g. private mode) - then we just don't save. */
 const getStorage = (): StorageLike | null => {
   try {
     return window.localStorage;
@@ -68,7 +68,7 @@ const view: ViewOptions = { filter: 'all', search: '', sort: 'created' };
 let editingId: number | null = null; // UNION with null: either an id or "nothing is being edited"
 let theme: Theme = getInitialTheme(storage);
 
-// ---------- Step 3: render ----------
+// Step 3: render
 
 /** Re-draws everything that depends on the data. */
 const render = (): void => {
@@ -78,7 +78,7 @@ const render = (): void => {
 
   const hasTodos = store.getAll().length > 0;
   emptyState.hidden = visibleTodos.length > 0;
-  emptyState.textContent = hasTodos ? 'No todos match your filter/search.' : 'Nothing to do yet – add your first todo!';
+  emptyState.textContent = hasTodos ? 'No todos match your filter/search.' : 'Nothing to do yet - add your first todo!';
 
   const progress = store.getProgress();
   toggleAllButton.disabled = !hasTodos;
@@ -118,7 +118,7 @@ const handlers: TodoHandlers = {
   },
 };
 
-// ---------- Step 4: error handling for the form (Option 16) ----------
+// Step 4: error handling for the form (Option 16)
 
 const showError = (message: string): void => {
   todoInput.classList.add('input-error');
@@ -133,7 +133,7 @@ const clearError = (): void => {
   errorMessage.hidden = true;
 };
 
-// ---------- Step 5: event listeners ----------
+// Step 5: event listeners
 
 todoForm.addEventListener('submit', (event: SubmitEvent) => {
   event.preventDefault();
@@ -149,7 +149,7 @@ todoForm.addEventListener('submit', (event: SubmitEvent) => {
   store.add({
     text: result.value,
     priority: isPriority(prioritySelect.value) ? prioritySelect.value : 'medium',
-    dueDate: dueDateInput.value, // may be "" → store turns it into undefined
+    dueDate: dueDateInput.value, // may be "" - store turns it into undefined
   });
 
   todoInput.value = '';
@@ -215,6 +215,6 @@ themeButton.addEventListener('click', () => {
   theme = toggleTheme(theme, themeButton, storage);
 });
 
-// ---------- Step 6: initial render ----------
+// Step 6: initial render
 applyTheme(theme, themeButton);
 render();

@@ -9,11 +9,11 @@ import type {
 } from './types';
 import { isPriority } from './types';
 
-/** Numeric weight of every priority – used for sorting (Option 7). */
+/** Numeric weight of every priority - used for sorting (Option 7). */
 const PRIORITY_WEIGHT: Record<Priority, number> = { high: 3, medium: 2, low: 1 };
 
 /**
- * TodoStore – a CLASS that owns the list of todos.
+ * TodoStore - a CLASS that owns the list of todos.
  *
  * - `private todos` can only be changed through the public methods below.
  * - `readonly storageKey` is set once in the constructor and never changes.
@@ -74,7 +74,7 @@ export class TodoStore {
 
   /**
    * Option 2/3: toggles all todos.
-   * If every todo is already completed, all become active – otherwise all become completed.
+   * If every todo is already completed, all become active - otherwise all become completed.
    */
   public toggleAll(): void {
     const allCompleted = this.todos.every((todo) => todo.completed);
@@ -112,7 +112,7 @@ export class TodoStore {
   }
 
   /**
-   * Returns the todos that should be displayed – filtered, searched and sorted.
+   * Returns the todos that should be displayed - filtered, searched and sorted.
    * Options 4, 5, 7 and 8.
    */
   public getVisible(options: ViewOptions): Todo[] {
@@ -137,9 +137,9 @@ export class TodoStore {
     return { completed, total, percent };
   }
 
-  // ---------- private helpers ----------
+  // private helpers
 
-  /** Sorts a copy of the list – never mutates the original array. */
+  /** Sorts a copy of the list - never mutates the original array. */
   private sort(list: Todo[], sortBy: ViewOptions['sort']): Todo[] {
     const sorted = [...list];
     switch (sortBy) {

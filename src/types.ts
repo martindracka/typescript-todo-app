@@ -4,7 +4,7 @@
  * so every other file can `import type { ... } from './types'`.
  */
 
-/** Priority level of a todo – a UNION of string literal types. */
+/** Priority level of a todo - a UNION of string literal types. */
 export type Priority = 'low' | 'medium' | 'high';
 
 /** Which todos the user wants to see (Option 4: filter by status). */
@@ -18,8 +18,8 @@ export type Theme = 'light' | 'dark';
 
 /**
  * The shape of one todo item.
- * `dueDate` is an OPTIONAL property (`?`) – a todo does not need a due date.
- * `id` and `createdAt` are `readonly` – they can never change after creation.
+ * `dueDate` is an OPTIONAL property (`?`) - a todo does not need a due date.
+ * `id` and `createdAt` are `readonly` - they can never change after creation.
  */
 export interface Todo {
   readonly id: number;
@@ -30,7 +30,7 @@ export interface Todo {
   readonly createdAt: number;
 }
 
-/** Data needed to create a new todo – only `text` is required. */
+/** Data needed to create a new todo - only `text` is required. */
 export interface NewTodoInput {
   text: string;
   priority?: Priority;
@@ -66,7 +66,7 @@ export interface StorageLike {
 
 /**
  * Result of validating user input (Option 16).
- * A DISCRIMINATED UNION – the `ok` property tells TypeScript which variant we have.
+ * A DISCRIMINATED UNION - the `ok` property tells TypeScript which variant we have.
  */
 export type ValidationResult =
   | { ok: true; value: string }

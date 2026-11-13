@@ -4,7 +4,7 @@ import type { StorageLike, Todo } from './types';
 import { isOverdue } from './utils/date';
 import { validateTodoText } from './utils/validation';
 
-/** A fake storage that lives in memory – implements the same interface as localStorage. */
+/** A fake storage that lives in memory - implements the same interface as localStorage. */
 class MemoryStorage implements StorageLike {
   private data = new Map<string, string>();
   getItem(key: string): string | null {

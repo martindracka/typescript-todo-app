@@ -1,49 +1,39 @@
 # TypeScript Todo App
 
-A todo app written in TypeScript and built with Vite. It started from
-[kristian-wittrup/2024-todo-TS-app-bde](https://github.com/kristian-wittrup/2024-todo-TS-app-bde),
-and I finished it by adding features from the optional features list.
+School project - a todo app in TypeScript + Vite.
+Based on the starter code from [kristian-wittrup/2024-todo-TS-app-bde](https://github.com/kristian-wittrup/2024-todo-TS-app-bde).
 
-## Implemented features
+## Features I added
 
-| # | Feature | Where in the code |
-|---|---------|-------------------|
-| 1 | Toggle completed status (checkbox) | `TodoStore.toggle`, `ui/render.ts` |
-| 2 | Clear all completed todos, toggle all | `TodoStore.clearCompleted`, `TodoStore.toggleAll` |
-| 3 | Edit a todo inline with Save / Cancel (Enter / Esc) | `renderEditItem` in `ui/render.ts`, `TodoStore.update` |
-| 4 | Filter by status (All / Active / Completed) | `TodoStore.getVisible`, `isFilterStatus` |
-| 5 | Sort by status | `TodoStore.sort` |
-| 6 | Due date, shown next to the todo, overdue todos highlighted | `utils/date.ts` |
-| 7 | Priority (Low / Medium / High), sort by priority | `Priority` type, `PRIORITY_WEIGHT` |
-| 8 | Search | `TodoStore.getVisible` |
-| 10 | Progress bar | `TodoStore.getProgress`, `renderProgress` |
-| 11 | Dark mode toggle (saved) | `ui/theme.ts`, CSS variables |
-| 14 | Local storage: save, load on page load, clear all | `TodoStore.save / load / clearAll` |
-| 15 | JSDoc comments | all files |
-| 16 | Input validation with red border and an error message | `utils/validation.ts` |
+- Mark a todo as completed (checkbox)
+- Toggle all / clear completed
+- Edit a todo with Save and Cancel (Enter / Esc also work)
+- Filter: All / Active / Completed
+- Sort by created, priority, due date or status
+- Due date, overdue todos are shown in red
+- Priority: Low / Medium / High
+- Search
+- Progress bar
+- Dark mode
+- Todos are saved in localStorage
+- JSDoc comments
+- Input validation with an error message
 
-## Project structure
+## Files
+
+- `src/main.ts` - starts the app, event listeners
+- `src/types.ts` - interfaces and types
+- `src/TodoStore.ts` - class with the todo list + localStorage
+- `src/ui/render.ts` - renders the list
+- `src/ui/theme.ts` - dark mode
+- `src/utils/` - date and validation helpers
+- `manual-compile/basics.ts` - example for compiling with tsc without Vite
+
+## How to run
 
 ```
-src/
-  main.ts              entry point: reads the DOM, handles events, re-renders the page
-  types.ts             interfaces, type aliases, union types, type guards
-  TodoStore.ts         class that holds the todos (private / public / readonly) and saves them to localStorage
-  ui/render.ts         draws the todo list and progress bar
-  ui/theme.ts          dark / light mode
-  utils/date.ts        due date helpers
-  utils/validation.ts  input validation (discriminated union result)
-  main.test.ts         Vitest unit tests
-manual-compile/
-  basics.ts            standalone file used to show compiling with tsc, without Vite
-```
-
-## Run it
-
-```bash
 npm install
-npm run dev             # start the Vite dev server
-npm test                # run the unit tests
-npm run build           # type-check with tsc, then build with Vite
-npm run compile:manual  # compile manual-compile/basics.ts with tsc and run it with node
+npm run dev
 ```
+
+Other commands: `npm test`, `npm run build`, `npm run compile:manual`

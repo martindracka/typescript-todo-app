@@ -18,7 +18,7 @@ export const getInitialTheme = (storage: StorageLike | null): Theme => {
  */
 export const applyTheme = (theme: Theme, button: HTMLButtonElement): void => {
   document.documentElement.dataset.theme = theme;
-  button.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+  button.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
   button.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
 };
 

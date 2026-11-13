@@ -4,21 +4,68 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>TypeScript Todo App</title>
   </head>
   <body>
-    <div class="container">
-      <h1>Todo App</h1>
-      <form class="todo-form">
-        <input type="text" id="todo-input" placeholder="Add a new todo" />
-        <button type="submit">Add</button>
-      </form>
-      <!-- error handling message : CSS added:: .input-error & #error-message -->
-      <p id="error-message">Please enter a todo item</p>
-      <ul class="todo-list" id="todo-list"></ul>
+    <main class="container">
+      <header class="app-header">
+        <h1>Todo App</h1>
+        <!-- Option 11: dark mode toggle -->
+        <button type="button" id="theme-toggle" class="btn btn-ghost">🌙 Dark</button>
+      </header>
 
-      <input type="color" id="colorPicker" />
-    </div>
+      <!-- Add todo: text + priority (Option 7) + due date (Option 6) -->
+      <form class="todo-form" novalidate>
+        <input type="text" id="todo-input" placeholder="Add a new todo" aria-label="Todo text" autocomplete="off" />
+        <div class="todo-form-row">
+          <select id="priority-select" aria-label="Priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+          <input type="date" id="due-date-input" aria-label="Due date" />
+          <button type="submit" class="btn btn-add">Add</button>
+        </div>
+      </form>
+      <!-- Option 16: error message -->
+      <p id="error-message" role="alert" hidden></p>
+
+      <!-- Option 10: progress bar -->
+      <section class="progress" aria-label="Progress">
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <span id="progress-text" class="progress-text">No todos yet</span>
+      </section>
+
+      <!-- Option 8 search, Option 4 filter, Option 5/7 sort -->
+      <section class="toolbar">
+        <input type="search" id="search-input" placeholder="Search todos…" aria-label="Search todos" />
+        <div class="toolbar-row">
+          <div class="filters" role="group" aria-label="Filter by status">
+            <button type="button" class="btn btn-filter active" data-filter="all">All</button>
+            <button type="button" class="btn btn-filter" data-filter="active">Active</button>
+            <button type="button" class="btn btn-filter" data-filter="completed">Completed</button>
+          </div>
+          <select id="sort-select" aria-label="Sort todos">
+            <option value="created">Sort: Created</option>
+            <option value="priority">Sort: Priority</option>
+            <option value="dueDate">Sort: Due date</option>
+            <option value="status">Sort: Status</option>
+          </select>
+        </div>
+      </section>
+
+      <ul class="todo-list" id="todo-list"></ul>
+      <p id="empty-state" class="empty-state"></p>
+
+      <!-- Option 2 + Option 14 -->
+      <footer class="footer-actions">
+        <button type="button" id="toggle-all-btn" class="btn btn-ghost">Toggle all</button>
+        <button type="button" id="clear-completed-btn" class="btn btn-ghost">Clear completed</button>
+        <button type="button" id="clear-all-btn" class="btn btn-danger">Clear all</button>
+      </footer>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

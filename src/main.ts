@@ -14,7 +14,7 @@
  */
 import './style.css';
 import { TodoStore } from './TodoStore';
-import { isFilterStatus, isPriority, isSortOption } from './types';
+import { isCategory, isFilterStatus, isPriority, isSortOption } from './types';
 import type { StorageLike, Theme, TodoChanges, ViewOptions } from './types';
 import { renderProgress, renderTodos } from './ui/render';
 import type { TodoHandlers } from './ui/render';
@@ -36,6 +36,7 @@ const getElement = <T extends HTMLElement>(selector: string): T => {
 const todoForm = getElement<HTMLFormElement>('.todo-form');
 const todoInput = getElement<HTMLInputElement>('#todo-input');
 const prioritySelect = getElement<HTMLSelectElement>('#priority-select');
+const categorySelect = getElement<HTMLSelectElement>('#category-select');
 const dueDateInput = getElement<HTMLInputElement>('#due-date-input');
 const errorMessage = getElement<HTMLParagraphElement>('#error-message');
 const todoList = getElement<HTMLUListElement>('#todo-list');
@@ -150,6 +151,7 @@ todoForm.addEventListener('submit', (event: SubmitEvent) => {
     text: result.value,
     priority: isPriority(prioritySelect.value) ? prioritySelect.value : 'medium',
     dueDate: dueDateInput.value, // may be "" - store turns it into undefined
+    category: isCategory(categorySelect.value) ? categorySelect.value : 'personal', // Option 9
   });
 
   todoInput.value = '';
@@ -230,7 +232,7 @@ render();
  * [x] Option 6: Due date for todos + highlight overdue todos
  * [x] Option 7: Priority levels + sort by priority
  * [x] Option 8: Search functionality
- * [ ] Option 9: Category tags
+ * [x] Option 9: Category tags (tag on every todo + filter by category)
  * [x] Option 10: Progress indicator
  * [x] Option 11: Dark mode toggle
  * [ ] Option 12: Export/Import todos

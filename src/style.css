@@ -17,6 +17,11 @@
   --low: #3b8a5a;
   --medium: #b7791f;
   --high: #c53030;
+  /* Option 9: category colours */
+  --cat-work: #2f6fed;
+  --cat-school: #7c3aed;
+  --cat-personal: #0f8b8d;
+  --cat-shopping: #c2410c;
   --shadow: 0 10px 30px rgba(20, 30, 50, 0.08);
   color-scheme: light;
 }
@@ -36,6 +41,10 @@
   --low: #5fd08d;
   --medium: #f0b44c;
   --high: #ff7a7a;
+  --cat-work: #7aa2ff;
+  --cat-school: #b794f6;
+  --cat-personal: #4fd1c5;
+  --cat-shopping: #fb923c;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
@@ -299,6 +308,27 @@ select:focus-visible,
 .badge-high {
   color: var(--high);
 }
+/* Option 9: category tags */
+.tag {
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--tag-color, var(--muted));
+}
+.tag-work {
+  --tag-color: var(--cat-work);
+}
+.tag-school {
+  --tag-color: var(--cat-school);
+}
+.tag-personal {
+  --tag-color: var(--cat-personal);
+}
+.tag-shopping {
+  --tag-color: var(--cat-shopping);
+}
+
 .badge-overdue {
   color: #fff;
   background: var(--danger);

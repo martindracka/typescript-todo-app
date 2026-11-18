@@ -7,6 +7,15 @@
 /** Priority level of a todo - a UNION of string literal types. */
 export type Priority = 'low' | 'medium' | 'high';
 
+/** Category of a todo (Option 9: category tags). */
+export type Category = 'work' | 'school' | 'personal' | 'shopping';
+
+/** All categories in the order they are shown in the UI. */
+export const CATEGORIES: readonly Category[] = ['work', 'school', 'personal', 'shopping'];
+
+/** Category filter in the toolbar - one category or all of them. */
+export type CategoryFilter = 'all' | Category;
+
 /** Which todos the user wants to see (Option 4: filter by status). */
 export type FilterStatus = 'all' | 'active' | 'completed';
 
@@ -27,6 +36,7 @@ export interface Todo {
   completed: boolean;
   priority: Priority;
   dueDate?: string; // ISO format "YYYY-MM-DD"
+  category: Category; // Option 9
   readonly createdAt: number;
 }
 
@@ -35,16 +45,19 @@ export interface NewTodoInput {
   text: string;
   priority?: Priority;
   dueDate?: string;
+  category?: Category;
 }
 
 /** The fields a user is allowed to change when editing a todo. */
-export type TodoChanges = Partial<Pick<Todo, 'text' | 'priority' | 'dueDate'>>;
+export type TodoChanges = Partial<Pick<Todo, 'text' | 'priority' | 'dueDate' | 'category'>>;
 
 /** Current view settings chosen in the toolbar. */
 export interface ViewOptions {
   filter: FilterStatus;
   search: string;
   sort: SortOption;
+  /** Option 9 - optional, missing means 'all' */
+  category?: CategoryFilter;
 }
 
 /** Result of the progress calculation (Option 10). */
@@ -83,3 +96,11 @@ export const isPriority = (value: string | undefined): value is Priority =>
 /** Type guard for sort options. */
 export const isSortOption = (value: string | undefined): value is SortOption =>
   value === 'created' || value === 'priority' || value === 'dueDate' || value === 'status';
+
+/** Type guard for categories (Option 9). */
+export const isCategory = (value: unknown): value is Category =>
+  typeof value === 'string' && (CATEGORIES as readonly string[]).includes(value);
+
+/** Type guard for the category filter (Option 9). */
+export const isCategoryFilter = (value: string | undefined): value is CategoryFilter =>
+  value === 'all' || isCategory(value);
